@@ -543,6 +543,22 @@ except Exception as e:
     st.error(f"⚠️ 加载股票列表时出错：{str(e)}")
     st.stop()
 
+# 调试：检查缓存文件和来源
+import os
+cache_csv_exists = os.path.exists("cache/stock_list.csv")
+cache_pkl_exists = os.path.exists("cache/stock_list.pkl")
+
+# 检查是否是内置列表（通过检查特定股票）
+is_builtin = "000001" in stock_list["代码"].values and "平安银行" in stock_list["名称"].values
+
+st.sidebar.markdown(f"""
+**调试信息**
+- 股票数量: `{len(stock_list)}` 只
+- CSV缓存存在: `{cache_csv_exists}`
+- Pickle缓存存在: `{cache_pkl_exists}`
+- 包含平安银行: `{is_builtin}`
+""")
+
 # ========== session_state 初始化 ==========
 if "max_candidates" not in st.session_state:
     st.session_state.max_candidates = 800
