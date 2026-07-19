@@ -22,91 +22,71 @@ st.set_page_config(
     initial_sidebar_state="expanded",
 )
 
-# 自定义CSS样式
+# 自定义CSS样式 - 完全按 prototype.html
 st.markdown("""
 <style>
-    /* 品牌标题 */
-    .brand-title {
-        font-size: 20px;
-        font-weight: 800;
-        color: #0A2540;
-        letter-spacing: 0.5px;
-    }
-    
-    /* 导航标签 */
-    .stTabs [data-baseweb="tab-list"] {
-        gap: 8px;
-    }
-    .stTabs [data-baseweb="tab"] {
-        font-size: 15px;
-        font-weight: 600;
-        padding: 10px 24px;
-    }
-    
-    /* 组合预览卡片 */
-    .combo-preview {
-        background: #0A2540;
-        color: white;
-        padding: 12px 16px;
-        border-radius: 10px;
-        margin: 12px 0;
-    }
-    .combo-preview .label {
-        font-size: 11px;
-        opacity: 0.7;
-        margin-bottom: 4px;
-    }
-    .combo-preview .text {
-        font-size: 13px;
-        font-weight: 500;
-        line-height: 1.5;
-    }
-    
-    /* 结果卡片 */
-    .stock-card {
-        border: 1px solid #e1e4e8;
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 12px;
-        background: #fff;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-        transition: all 0.2s;
-    }
-    .stock-card:hover {
-        border-color: #0A2540;
-        box-shadow: 0 4px 12px rgba(10,37,64,0.08);
-    }
-    
-    /* 合规声明 */
-    .disclaimer {
-        padding: 12px 16px;
-        background: #fafbfc;
-        border: 1px solid #e0e0e0;
-        border-radius: 8px;
-        font-size: 11px;
-        color: #888;
-        line-height: 1.6;
-        margin-top: 16px;
-    }
-    
-    /* 热门关键词 */
-    .hot-keyword {
-        display: inline-block;
-        padding: 6px 14px;
-        background: #f5f7fa;
-        border: 1px solid #e0e0e0;
-        border-radius: 20px;
-        font-size: 13px;
-        color: #555;
-        cursor: pointer;
-        margin: 4px;
-        transition: all 0.2s;
-    }
-    .hot-keyword:hover {
-        background: #0A2540;
-        color: white;
-        border-color: #0A2540;
-    }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+    background: #FFFFFF; color: #1a1a1a;
+}
+
+/* 顶部导航 */
+.top-nav {
+    display: flex; align-items: center; justify-content: center;
+    gap: 4px; padding: 12px 24px;
+    border-bottom: 1px solid #E8E8E8; background: #FFFFFF;
+}
+.nav-brand {
+    font-size: 16px; font-weight: 700; color: #0A2540;
+    display: flex; align-items: center; gap: 8px; letter-spacing: 0.5px;
+}
+.live-dot { width: 6px; height: 6px; background: #43A047; border-radius: 50%; }
+
+/* 页面标题 */
+.page-title { text-align: center; margin: 40px 0 24px; }
+.page-title h1 { font-size: 26px; font-weight: 700; color: #0A2540; margin-bottom: 8px; letter-spacing: 0.5px; }
+.page-title p { font-size: 14px; color: #999; font-weight: 400; }
+
+/* 聊天窗口 */
+.chat-center { max-width: 720px; margin: 0 auto; }
+.chat-msg { max-width: 80%; padding: 14px 18px; border-radius: 16px; font-size: 14px; line-height: 1.6; margin-bottom: 16px; }
+.chat-msg.ai { background: #f5f7fa; color: #1a1a1a; border-bottom-left-radius: 4px; }
+.chat-msg.user { background: #0A2540; color: #fff; border-bottom-right-radius: 4px; margin-left: auto; }
+.msg-label { font-size: 11px; color: #888; margin-bottom: 4px; font-weight: 600; letter-spacing: 0.5px; }
+
+/* 输入区域 */
+.input-area { max-width: 720px; margin: 24px auto; display: flex; gap: 12px; }
+.chat-input { flex: 1; padding: 14px 18px; border: 1px solid #E8E8E8; border-radius: 12px; font-size: 14px; }
+.send-btn { padding: 14px 24px; background: #0A2540; color: #fff; border: none; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; }
+
+/* 热门关键词 */
+.hot-keywords { max-width: 720px; margin: 0 auto; padding: 16px 0; }
+.keywords-label { font-size: 12px; font-weight: 600; color: #888; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.keyword-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; }
+.keyword-btn { padding: 10px 14px; border: 1px solid #E8E8E8; border-radius: 8px; background: #fff; font-size: 13px; font-weight: 500; color: #333; cursor: pointer; text-align: center; transition: all 0.2s; }
+.keyword-btn:hover { border-color: #0A2540; background: #f5f7fa; }
+
+/* 风险提示 */
+.disclaimer { max-width: 720px; margin: 24px auto; padding: 12px 16px; background: #fffbeb; border: 1px solid #fcd34d; border-radius: 8px; font-size: 12px; color: #92400e; line-height: 1.6; }
+
+/* 策略页 */
+.sidebar-panel { background: #fff; border: 1px solid #E8E8E8; border-radius: 12px; padding: 24px; }
+.sidebar-title { font-size: 16px; font-weight: 700; color: #0A2540; margin-bottom: 20px; padding-bottom: 14px; border-bottom: 1px solid #E8E8E8; letter-spacing: 0.5px; }
+.form-label { font-size: 12px; font-weight: 600; color: #666; margin-bottom: 8px; display: block; letter-spacing: 0.3px; text-transform: uppercase; }
+.combo-preview { background: #0A2540; color: #fff; border-radius: 10px; padding: 14px 16px; margin: 16px 0; font-size: 13px; }
+.combo-preview h4 { font-size: 11px; font-weight: 600; opacity: 0.7; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+.action-btn { width: 100%; padding: 14px; background: #0A2540; color: #fff; border: none; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+
+/* 数据看板 */
+.kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 24px; }
+.kpi-card { background: #fff; border: 1px solid #E8E8E8; border-radius: 12px; padding: 24px; text-align: center; }
+.kpi-label { font-size: 11px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+.kpi-value { font-size: 32px; font-weight: 700; color: #0A2540; margin-bottom: 4px; }
+
+/* 结果卡片 */
+.result-card { background: #fff; border: 1px solid #E8E8E8; border-radius: 12px; padding: 20px; margin-bottom: 12px; }
+.result-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); border-color: #0A2540; }
 </style>
 """, unsafe_allow_html=True)
 
@@ -1340,141 +1320,154 @@ def run_agent_self_check() -> list:
 
 
 def render_home_page():
-    """数据看板页 - 按截图风格"""
-    st.markdown('<div style="text-align:center; margin:40px 0 16px;"><h1 style="font-size:28px; font-weight:700; color:#0A2540; margin:0;">数据看板</h1></div>', unsafe_allow_html=True)
+    """数据看板页"""
+    # 居中标题
+    st.markdown("""
+    <div class="page-title">
+        <h1>数据看板</h1>
+    </div>
+    """, unsafe_allow_html=True)
 
-    # KPI 卡片
+    # KPI 网格
+    st.markdown('<div class="kpi-grid">', unsafe_allow_html=True)
     col1, col2, col3, col4 = st.columns(4)
     with col1:
         st.markdown(f"""
-        <div style="text-align:center; padding:20px; background:#fff; border:1px solid #eee; border-radius:12px;">
-            <div style="font-size:24px; font-weight:700; color:#0A2540;">{len(stock_list)}</div>
-            <div style="font-size:12px; color:#888; margin-top:4px;">市场总股票</div>
+        <div class="kpi-card">
+            <div class="kpi-label">市场总股票</div>
+            <div class="kpi-value">{len(stock_list)}</div>
         </div>
         """, unsafe_allow_html=True)
     with col2:
         st.markdown("""
-        <div style="text-align:center; padding:20px; background:#fff; border:1px solid #eee; border-radius:12px;">
-            <div style="font-size:24px; font-weight:700; color:#0A2540;">--</div>
-            <div style="font-size:12px; color:#888; margin-top:4px;">上涨家数</div>
+        <div class="kpi-card">
+            <div class="kpi-label">上涨家数</div>
+            <div class="kpi-value">--</div>
         </div>
         """, unsafe_allow_html=True)
     with col3:
         st.markdown("""
-        <div style="text-align:center; padding:20px; background:#fff; border:1px solid #eee; border-radius:12px;">
-            <div style="font-size:24px; font-weight:700; color:#0A2540;">--</div>
-            <div style="font-size:12px; color:#888; margin-top:4px;">下跌家数</div>
+        <div class="kpi-card">
+            <div class="kpi-label">下跌家数</div>
+            <div class="kpi-value">--</div>
         </div>
         """, unsafe_allow_html=True)
     with col4:
         st.markdown("""
-        <div style="text-align:center; padding:20px; background:#fff; border:1px solid #eee; border-radius:12px;">
-            <div style="font-size:24px; font-weight:700; color:#0A2540;">--</div>
-            <div style="font-size:12px; color:#888; margin-top:4px;">涨停家数</div>
+        <div class="kpi-card">
+            <div class="kpi-label">涨停家数</div>
+            <div class="kpi-value">--</div>
         </div>
         """, unsafe_allow_html=True)
-
-    st.divider()
+    st.markdown('</div>', unsafe_allow_html=True)
     
     # 选股案例
-    st.subheader("🎯 选股案例")
+    st.markdown('<div style="max-width:1200px; margin:0 auto;">', unsafe_allow_html=True)
+    st.markdown('<h2 style="font-size:16px; font-weight:700; color:#0A2540; margin-bottom:16px; letter-spacing:0.5px;">🎯 选股案例</h2>', unsafe_allow_html=True)
     case_col1, case_col2 = st.columns(2)
     with case_col1:
         st.markdown("""
-        <div style="border:1px solid #e1e4e8; border-radius:12px; padding:16px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <div style="font-size:16px; font-weight:700;">科大讯飞</div>
-                    <div style="font-size:12px; color:#888;">002230</div>
+        <div class="result-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:16px; font-weight:700; color:#0A2540;">科大讯飞</span>
+                    <span style="font-size:12px; color:#888; background:#f5f5f5; padding:2px 8px; border-radius:4px;">002230</span>
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-size:18px; font-weight:800;">¥58.32</div>
-                    <div style="font-size:14px; color:#ef5350;">▲ +2.35%</div>
+                    <div style="font-size:20px; font-weight:700; color:#0A2540;">¥58.32</div>
+                    <div style="font-size:13px; font-weight:600; color:#E53935;">▲ +2.35%</div>
                 </div>
             </div>
-            <div style="margin-top:10px; display:flex; gap:8px;">
-                <span style="background:#0A2540; color:white; padding:2px 8px; border-radius:4px; font-size:11px;">量价齐升</span>
-                <span style="background:#e8f5e9; color:#2e7d32; padding:2px 8px; border-radius:4px; font-size:11px;">MACD金叉</span>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <span style="font-size:11px; padding:4px 10px; border-radius:6px; font-weight:500; background:rgba(10,37,64,0.08); color:#0A2540;">量价齐升</span>
+                <span style="font-size:11px; padding:4px 10px; border-radius:6px; font-weight:500; background:rgba(67,160,71,0.1); color:#43A047;">MACD金叉</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
     with case_col2:
         st.markdown("""
-        <div style="border:1px solid #e1e4e8; border-radius:12px; padding:16px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <div style="font-size:16px; font-weight:700;">贵州茅台</div>
-                    <div style="font-size:12px; color:#888;">600519</div>
+        <div class="result-card">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:12px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <span style="font-size:16px; font-weight:700; color:#0A2540;">贵州茅台</span>
+                    <span style="font-size:12px; color:#888; background:#f5f5f5; padding:2px 8px; border-radius:4px;">600519</span>
                 </div>
                 <div style="text-align:right;">
-                    <div style="font-size:18px; font-weight:800;">¥1,580.00</div>
-                    <div style="font-size:14px; color:#4caf50;">▼ -0.82%</div>
+                    <div style="font-size:20px; font-weight:700; color:#0A2540;">¥1,580.00</div>
+                    <div style="font-size:13px; font-weight:600; color:#43A047;">▼ -0.82%</div>
                 </div>
             </div>
-            <div style="margin-top:10px; display:flex; gap:8px;">
-                <span style="background:#0A2540; color:white; padding:2px 8px; border-radius:4px; font-size:11px;">基本面选股</span>
-                <span style="background:#e3f2fd; color:#1565c0; padding:2px 8px; border-radius:4px; font-size:11px;">低PE</span>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <span style="font-size:11px; padding:4px 10px; border-radius:6px; font-weight:500; background:rgba(10,37,64,0.08); color:#0A2540;">基本面选股</span>
+                <span style="font-size:11px; padding:4px 10px; border-radius:6px; font-weight:500; background:rgba(33,150,243,0.1); color:#2196F3;">低PE</span>
             </div>
         </div>
         """, unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
     
-    # 合规声明
+    # 风险提示
     st.markdown("""
-    <div style="max-width:720px; margin:24px auto; padding:12px 16px; background:#fffbeb; border:1px solid #fcd34d; border-radius:8px; font-size:12px; color:#92400e; line-height:1.6;">
+    <div class="disclaimer">
         ⚠️ <strong>风险提示：</strong> 本工具基于公开历史数据与算法模型生成分析结果，<strong>不构成投资建议</strong>。股票市场存在波动风险，过往表现不代表未来收益。投资者应独立判断，自行承担投资风险。
     </div>
     """, unsafe_allow_html=True)
 
 
 def render_agent_page():
-    """AI 选股助手页面 - 按截图风格"""
+    """AI 选股助手页面"""
     # 页面标题
     st.markdown("""
-    <div style="text-align:center; margin:40px 0 16px;">
-        <h1 style="font-size:28px; font-weight:700; color:#0A2540; margin:0;">AI 选股助手</h1>
-        <p style="font-size:14px; color:#888; margin:8px 0 0;">用自然语言描述你的选股想法，AI 帮你筛选</p>
+    <div class="page-title">
+        <h1>AI 选股助手</h1>
+        <p>用自然语言描述你的选股想法，AI 帮你筛选</p>
     </div>
     """, unsafe_allow_html=True)
 
-    # 聊天窗口（居中）
-    st.markdown("<div style='max-width:720px; margin:0 auto;'>", unsafe_allow_html=True)
+    # 聊天窗口
+    st.markdown('<div class="chat-center">', unsafe_allow_html=True)
+    
+    # 欢迎消息
+    if not st.session_state.chat_history:
+        st.markdown("""
+        <div class="chat-msg ai">
+            <div class="msg-label">智选助手</div>
+            <div>你好！我是智选助手。今天想怎么选股？</div>
+            <div style="margin-top:8px; font-size:13px; color:#666;">
+                你可以直接说：<br>
+                • "帮我找市值小于100亿的科技股"<br>
+                • "涨幅超过5%的小盘股"<br>
+                • "PE小于20的破净股"
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
     
     # 显示对话历史
     for msg in st.session_state.chat_history:
         if msg["role"] == "assistant":
             st.markdown(f"""
-            <div style="margin-bottom:16px;">
-                <div style="font-size:11px; color:#888; margin-bottom:4px;">智选助手</div>
-                <div style="max-width:80%; padding:12px 16px; background:#f5f7fa; border:1px solid #eee; border-radius:12px; font-size:14px; line-height:1.6;">
-                    {msg['content']}
-                </div>
+            <div class="chat-msg ai">
+                <div class="msg-label">智选助手</div>
+                <div>{msg['content']}</div>
             </div>
             """, unsafe_allow_html=True)
         else:
             st.markdown(f"""
-            <div style="margin-bottom:16px; text-align:right;">
-                <div style="display:inline-block; max-width:80%; padding:12px 16px; background:#0A2540; color:#fff; border-radius:12px; font-size:14px; line-height:1.6;">
-                    {msg['content']}
-                </div>
+            <div class="chat-msg user">
+                <div>{msg['content']}</div>
             </div>
             """, unsafe_allow_html=True)
     
-    st.markdown("</div>", unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
 
-    # 输入框（底部居中）
-    st.markdown("<div style='max-width:720px; margin:32px auto 16px; padding:0 16px;'>", unsafe_allow_html=True)
+    # 输入框
     user_input = st.chat_input("输入自然语言选股条件，例如：帮我找市值小于100亿的科技股...")
-    st.markdown("</div>", unsafe_allow_html=True)
-    
     if user_input:
         st.session_state.chat_history.append({"role": "user", "content": user_input})
-        
         try:
             parsed = parse_intent(user_input)
             observation = execute_action(parsed["intent"], parsed["params"])
             final = generate_response(parsed["thought"], observation, user_input)
             st.session_state.chat_history.append({"role": "assistant", "content": final})
-            
             if observation.get("type") == "navigate":
                 st.rerun()
             else:
@@ -1486,9 +1479,9 @@ def render_agent_page():
 
     # 热门关键词
     st.markdown("""
-    <div style="max-width:720px; margin:0 auto; padding:0 16px;">
-        <div style="font-size:12px; color:#888; margin-bottom:8px;">热门关键词</div>
-        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    <div class="hot-keywords">
+        <div class="keywords-label">热门关键词</div>
+        <div class="keyword-grid">
     """, unsafe_allow_html=True)
     
     keywords = ["小盘股", "强势股", "低PE", "科技股", "高换手", "破净股", 
@@ -1505,7 +1498,7 @@ def render_agent_page():
     
     # 风险提示
     st.markdown("""
-    <div style="max-width:720px; margin:24px auto; padding:12px 16px; background:#fffbeb; border:1px solid #fcd34d; border-radius:8px; font-size:12px; color:#92400e; line-height:1.6;">
+    <div class="disclaimer">
         ⚠️ <strong>风险提示：</strong> 本工具基于公开历史数据与算法模型生成分析结果，<strong>不构成投资建议</strong>。股票市场存在波动风险，过往表现不代表未来收益。投资者应独立判断，自行承担投资风险。
     </div>
     """, unsafe_allow_html=True)
