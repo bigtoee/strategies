@@ -1591,6 +1591,10 @@ if st.session_state.get("run_trigger", False):
         # 避免merge时名称列冲突，先删除quotes中的名称列
         if "名称" in all_quotes.columns:
             all_quotes = all_quotes.drop(columns=["名称"])
+        # 【修复】确保代码列类型一致（str）
+        stock_list_filtered["代码"] = stock_list_filtered["代码"].astype(str)
+        if not all_quotes.empty:
+            all_quotes["代码"] = all_quotes["代码"].astype(str)
         merged = stock_list_filtered.merge(all_quotes, on="代码", how="inner")
         status.update(label=f"✅ 实时行情获取完成 ({len(merged)}只)")
 
