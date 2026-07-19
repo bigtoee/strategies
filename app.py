@@ -533,7 +533,14 @@ st.markdown(f"""
 def load_stocks():
     return get_stock_list()
 
-stock_list = load_stocks()
+try:
+    stock_list = load_stocks()
+    if stock_list.empty:
+        st.error("⚠️ 股票列表为空，请检查网络连接或刷新页面重试。")
+        st.stop()
+except Exception as e:
+    st.error(f"⚠️ 加载股票列表时出错：{str(e)}")
+    st.stop()
 
 # ========== session_state 初始化 ==========
 if "max_candidates" not in st.session_state:
@@ -1522,8 +1529,12 @@ with st.sidebar:
 # ========== 概览卡片 ==========
 # 过滤后的股票池大小
 # 【修复】增加空数据保护
-if stock_list.empty or "名称" not in stock_list.columns:
-    st.error("⚠️ 股票列表加载失败，请检查网络连接或刷新页面重试。")
+try:
+    if stock_list.empty or "名称" not in stock_list.columns:
+        st.error(f"⚠️ 股票列表加载失败：数据为空或缺少'名称'列。列名：{list(stock_list.columns)}")
+        st.stop()
+except Exception as e:
+    st.error(f"⚠️ 股票列表加载异常：{str(e)}")
     st.stop()
 
 if filter_st:
