@@ -1,0 +1,33 @@
+# Streamlit / Python
+venv/
+venv_rag/
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+dist/
+build/
+
+# Cache & Logs
+cache/
+*.log
+*.pid
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (large files)
+*.csv
+*.xlsx
+!requirements*.txt
+
+# Cloudflare tunnel
+cloudflared
+cloudflared*
