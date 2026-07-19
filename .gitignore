@@ -9,7 +9,8 @@ dist/
 build/
 
 # Cache & Logs
-cache/
+cache/*.pkl
+!cache/stock_list.pkl
 *.log
 *.pid
 

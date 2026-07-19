@@ -1521,6 +1521,11 @@ with st.sidebar:
 
 # ========== 概览卡片 ==========
 # 过滤后的股票池大小
+# 【修复】增加空数据保护
+if stock_list.empty or "名称" not in stock_list.columns:
+    st.error("⚠️ 股票列表加载失败，请检查网络连接或刷新页面重试。")
+    st.stop()
+
 if filter_st:
     stock_list_filtered = stock_list[~stock_list["名称"].apply(is_risk_stock)]
 else:
