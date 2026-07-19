@@ -530,15 +530,15 @@ st.markdown(f"""
 
 # ========== 加载股票列表 ==========
 @st.cache_data(ttl=3600)
-def load_stocks(_cache_bust="v3"):
-    """_cache_bust: 修改此值可强制刷新缓存"""
+def _load_stocks_v3(_cache_bust="v3"):
+    """加载股票列表 - v3 缓存版本"""
     df = get_stock_list()
     if df.empty or "名称" not in df.columns:
         raise RuntimeError("获取股票列表失败，请检查网络或数据源")
     return df
 
 try:
-    stock_list = load_stocks()
+    stock_list = _load_stocks_v3()
 except Exception as e:
     st.error(f"⚠️ 加载股票列表时出错：{str(e)}")
     st.stop()
