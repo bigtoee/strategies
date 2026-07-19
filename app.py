@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-AI选股系统 - Streamlit Web界面
+智选-量化选股 - Streamlit Web界面
 基于实时API数据，无本地数据库
 """
 import io
@@ -13,6 +13,102 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import streamlit as st
 from datetime import datetime
+
+# ========== 全局样式注入 ==========
+st.set_page_config(
+    page_title="智选-量化选股",
+    page_icon="📈",
+    layout="wide",
+    initial_sidebar_state="expanded",
+)
+
+# 自定义CSS样式
+st.markdown("""
+<style>
+    /* 品牌标题 */
+    .brand-title {
+        font-size: 20px;
+        font-weight: 800;
+        color: #0A2540;
+        letter-spacing: 0.5px;
+    }
+    
+    /* 导航标签 */
+    .stTabs [data-baseweb="tab-list"] {
+        gap: 8px;
+    }
+    .stTabs [data-baseweb="tab"] {
+        font-size: 15px;
+        font-weight: 600;
+        padding: 10px 24px;
+    }
+    
+    /* 组合预览卡片 */
+    .combo-preview {
+        background: #0A2540;
+        color: white;
+        padding: 12px 16px;
+        border-radius: 10px;
+        margin: 12px 0;
+    }
+    .combo-preview .label {
+        font-size: 11px;
+        opacity: 0.7;
+        margin-bottom: 4px;
+    }
+    .combo-preview .text {
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 1.5;
+    }
+    
+    /* 结果卡片 */
+    .stock-card {
+        border: 1px solid #e1e4e8;
+        border-radius: 12px;
+        padding: 16px;
+        margin-bottom: 12px;
+        background: #fff;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        transition: all 0.2s;
+    }
+    .stock-card:hover {
+        border-color: #0A2540;
+        box-shadow: 0 4px 12px rgba(10,37,64,0.08);
+    }
+    
+    /* 合规声明 */
+    .disclaimer {
+        padding: 12px 16px;
+        background: #fafbfc;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        font-size: 11px;
+        color: #888;
+        line-height: 1.6;
+        margin-top: 16px;
+    }
+    
+    /* 热门关键词 */
+    .hot-keyword {
+        display: inline-block;
+        padding: 6px 14px;
+        background: #f5f7fa;
+        border: 1px solid #e0e0e0;
+        border-radius: 20px;
+        font-size: 13px;
+        color: #555;
+        cursor: pointer;
+        margin: 4px;
+        transition: all 0.2s;
+    }
+    .hot-keyword:hover {
+        background: #0A2540;
+        color: white;
+        border-color: #0A2540;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # ========== Kimi API 配置 ==========
 MOONSHOT_API_KEY = os.environ.get("MOONSHOT_API_KEY", "sk-glzfuPUZClcjyMUebYUjgDcF26FyrONckkPX4taMY8dp3hW9")
@@ -392,7 +488,7 @@ def get_card_conditions(strategy: str, row: pd.Series) -> list:
 
 # ========== 页面配置 ==========
 st.set_page_config(
-    page_title="AI选股系统",
+    page_title="智选-量化选股",
     page_icon="🤖",
     layout="wide",
     initial_sidebar_state="expanded",
@@ -520,7 +616,7 @@ st.markdown("""
 # ========== 顶部导航栏 ==========
 st.markdown(f"""
 <div class="topbar">
-    <div class="topbar-left"><span>🤖</span><span>AI选股系统</span><span class="live-tag">实时数据</span></div>
+    <div class="topbar-left"><span>📈</span><span>智选-量化选股</span><span class="live-tag">实时数据</span></div>
     <div class="topbar-right">
         <span class="topbar-tag">📊 {len(STRATEGIES)}种策略</span>
         <span>🕐 {datetime.now().strftime('%m-%d %H:%M')}</span>
@@ -1244,137 +1340,230 @@ def run_agent_self_check() -> list:
 
 
 def render_home_page():
-    """首页"""
-    st.title("🤖 AI选股系统")
+    """数据看板页 - 按截图风格"""
+    st.markdown('<div style="text-align:center; margin:40px 0 16px;"><h1 style="font-size:28px; font-weight:700; color:#0A2540; margin:0;">数据看板</h1></div>', unsafe_allow_html=True)
+
+    # KPI 卡片
+    col1, col2, col3, col4 = st.columns(4)
+    with col1:
+        st.markdown(f"""
+        <div style="text-align:center; padding:20px; background:#fff; border:1px solid #eee; border-radius:12px;">
+            <div style="font-size:24px; font-weight:700; color:#0A2540;">{len(stock_list)}</div>
+            <div style="font-size:12px; color:#888; margin-top:4px;">市场总股票</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col2:
+        st.markdown("""
+        <div style="text-align:center; padding:20px; background:#fff; border:1px solid #eee; border-radius:12px;">
+            <div style="font-size:24px; font-weight:700; color:#0A2540;">--</div>
+            <div style="font-size:12px; color:#888; margin-top:4px;">上涨家数</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col3:
+        st.markdown("""
+        <div style="text-align:center; padding:20px; background:#fff; border:1px solid #eee; border-radius:12px;">
+            <div style="font-size:24px; font-weight:700; color:#0A2540;">--</div>
+            <div style="font-size:12px; color:#888; margin-top:4px;">下跌家数</div>
+        </div>
+        """, unsafe_allow_html=True)
+    with col4:
+        st.markdown("""
+        <div style="text-align:center; padding:20px; background:#fff; border:1px solid #eee; border-radius:12px;">
+            <div style="font-size:24px; font-weight:700; color:#0A2540;">--</div>
+            <div style="font-size:12px; color:#888; margin-top:4px;">涨停家数</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.divider()
+    
+    # 选股案例
+    st.subheader("🎯 选股案例")
+    case_col1, case_col2 = st.columns(2)
+    with case_col1:
+        st.markdown("""
+        <div style="border:1px solid #e1e4e8; border-radius:12px; padding:16px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <div style="font-size:16px; font-weight:700;">科大讯飞</div>
+                    <div style="font-size:12px; color:#888;">002230</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:18px; font-weight:800;">¥58.32</div>
+                    <div style="font-size:14px; color:#ef5350;">▲ +2.35%</div>
+                </div>
+            </div>
+            <div style="margin-top:10px; display:flex; gap:8px;">
+                <span style="background:#0A2540; color:white; padding:2px 8px; border-radius:4px; font-size:11px;">量价齐升</span>
+                <span style="background:#e8f5e9; color:#2e7d32; padding:2px 8px; border-radius:4px; font-size:11px;">MACD金叉</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    with case_col2:
+        st.markdown("""
+        <div style="border:1px solid #e1e4e8; border-radius:12px; padding:16px; background:#fff; box-shadow:0 1px 3px rgba(0,0,0,0.04);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <div style="font-size:16px; font-weight:700;">贵州茅台</div>
+                    <div style="font-size:12px; color:#888;">600519</div>
+                </div>
+                <div style="text-align:right;">
+                    <div style="font-size:18px; font-weight:800;">¥1,580.00</div>
+                    <div style="font-size:14px; color:#4caf50;">▼ -0.82%</div>
+                </div>
+            </div>
+            <div style="margin-top:10px; display:flex; gap:8px;">
+                <span style="background:#0A2540; color:white; padding:2px 8px; border-radius:4px; font-size:11px;">基本面选股</span>
+                <span style="background:#e3f2fd; color:#1565c0; padding:2px 8px; border-radius:4px; font-size:11px;">低PE</span>
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # 合规声明
     st.markdown("""
-    <div style="font-size:16px;color:#555;line-height:1.8;">
-    基于实时行情数据，结合多种技术分析策略，帮助您发现潜在投资机会。<br>
-    新增 <b>AI 选股助手</b>，可通过自然语言对话执行选股、查询行情、解释策略。
+    <div style="max-width:720px; margin:24px auto; padding:12px 16px; background:#fffbeb; border:1px solid #fcd34d; border-radius:8px; font-size:12px; color:#92400e; line-height:1.6;">
+        ⚠️ <strong>风险提示：</strong> 本工具基于公开历史数据与算法模型生成分析结果，<strong>不构成投资建议</strong>。股票市场存在波动风险，过往表现不代表未来收益。投资者应独立判断，自行承担投资风险。
     </div>
     """, unsafe_allow_html=True)
 
-    c1, c2 = st.columns(2)
-    with c1:
-        if st.button("🤖 进入 AI 选股助手", type="primary", width="stretch"):
-            if "nav_radio" in st.session_state:
-                del st.session_state.nav_radio
-            st.session_state.current_page = "🤖 AI选股助手"
-            st.rerun()
-    with c2:
-        if st.button("📈 进入策略选股", type="secondary", width="stretch"):
-            if "nav_radio" in st.session_state:
-                del st.session_state.nav_radio
-            st.session_state.current_page = "📈 策略选股"
-            st.rerun()
-
-    st.divider()
-    st.subheader("📊 快速概览")
-    if "last_result" in st.session_state and st.session_state.last_result is not None:
-        last = st.session_state.last_result
-        strategy = STRATEGY_NAMES.get(st.session_state.get("last_strategy", ""), "")
-        st.info(f"上次选股结果：{strategy} 策略，共选出 **{len(last)}** 只股票。")
-    else:
-        st.info("暂无选股记录，点击上方按钮开始分析。")
-
-    st.caption("⚠️ 本系统仅供学习研究，不构成投资建议。")
-
 
 def render_agent_page():
-    """AI 选股助手页面"""
-    st.title("🤖 AI 选股助手")
-    st.caption("基于 ReAct 框架：先思考 → 再行动 → 最后回答")
+    """AI 选股助手页面 - 按截图风格"""
+    # 页面标题
+    st.markdown("""
+    <div style="text-align:center; margin:40px 0 16px;">
+        <h1 style="font-size:28px; font-weight:700; color:#0A2540; margin:0;">AI 选股助手</h1>
+        <p style="font-size:14px; color:#888; margin:8px 0 0;">用自然语言描述你的选股想法，AI 帮你筛选</p>
+    </div>
+    """, unsafe_allow_html=True)
 
+    # 聊天窗口（居中）
+    st.markdown("<div style='max-width:720px; margin:0 auto;'>", unsafe_allow_html=True)
+    
+    # 显示对话历史
     for msg in st.session_state.chat_history:
-        with st.chat_message(msg["role"]):
-            st.markdown(msg["content"])
+        if msg["role"] == "assistant":
+            st.markdown(f"""
+            <div style="margin-bottom:16px;">
+                <div style="font-size:11px; color:#888; margin-bottom:4px;">智选助手</div>
+                <div style="max-width:80%; padding:12px 16px; background:#f5f7fa; border:1px solid #eee; border-radius:12px; font-size:14px; line-height:1.6;">
+                    {msg['content']}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+        else:
+            st.markdown(f"""
+            <div style="margin-bottom:16px; text-align:right;">
+                <div style="display:inline-block; max-width:80%; padding:12px 16px; background:#0A2540; color:#fff; border-radius:12px; font-size:14px; line-height:1.6;">
+                    {msg['content']}
+                </div>
+            </div>
+            """, unsafe_allow_html=True)
+    
+    st.markdown("</div>", unsafe_allow_html=True)
 
-    user_input = st.chat_input("请输入您的问题，例如：帮我用均线多头排列策略选股 / 000988 怎么样 / 解释 MACD金叉")
+    # 输入框（底部居中）
+    st.markdown("<div style='max-width:720px; margin:32px auto 16px; padding:0 16px;'>", unsafe_allow_html=True)
+    user_input = st.chat_input("输入自然语言选股条件，例如：帮我找市值小于100亿的科技股...")
+    st.markdown("</div>", unsafe_allow_html=True)
+    
     if user_input:
         st.session_state.chat_history.append({"role": "user", "content": user_input})
-        with st.chat_message("user"):
-            st.markdown(user_input)
-
+        
         try:
-            with st.chat_message("assistant"):
-                with st.status("🧠 正在思考...", expanded=True) as status:
-                    parsed = parse_intent(user_input)
-                    st.markdown(f"**意图识别：** {parsed['thought']}")
-                    st.markdown(f"**执行行动：** `{parsed['intent']}`")
-                    observation = execute_action(parsed["intent"], parsed["params"])
-                    st.markdown(f"**观察结果：** {observation['data'][:200]}...")
-                    status.update(label="✅ 思考完成", state="complete", expanded=False)
-
-                final = generate_response(parsed["thought"], observation, user_input)
-                st.markdown(final)
-                st.session_state.chat_history.append({"role": "assistant", "content": final})
-
+            parsed = parse_intent(user_input)
+            observation = execute_action(parsed["intent"], parsed["params"])
+            final = generate_response(parsed["thought"], observation, user_input)
+            st.session_state.chat_history.append({"role": "assistant", "content": final})
+            
             if observation.get("type") == "navigate":
                 st.rerun()
-        except Exception as e:
-            error_msg = (
-                f"抱歉，处理您的请求时遇到了问题：{e}\n\n"
-                "我可以帮您：\n"
-                "• 解释某个策略（如：解释量价齐升）\n"
-                "• 查询个股行情（如：000988 怎么样）\n"
-                "• 执行选股（如：用均线多头排列选股）\n\n"
-                "请换一种方式描述您的需求。"
-            )
-            st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
-            with st.chat_message("assistant"):
-                st.markdown(error_msg)
-
-    c1, c2 = st.columns(2)
-    with c1:
-        if st.button("🧪 自动测试", width="stretch"):
-            with st.status("🧪 正在自动运行 5 个测试用例...", expanded=True) as status:
-                results = run_agent_self_check()
-                status.update(label="✅ 测试完成", state="complete", expanded=True)
-            for r in results:
-                icon = "✅" if r["ok"] else "❌"
-                st.markdown(f"{icon} **{r['question']}** → 期望 `{r['expected']}` / 实际 `{r['actual']}`")
-                if r["params"]:
-                    st.caption(f"参数：{r['params']}")
-            passed = sum(1 for r in results if r["ok"])
-            if passed == len(results):
-                st.success(f"🎉 全部 {len(results)} 个测试用例通过！")
             else:
-                st.warning(f"⚠️ {passed}/{len(results)} 个测试用例通过，请检查失败项。")
-    with c2:
-        if st.button("🗑️ 清空对话", width="stretch"):
-            st.session_state.chat_history = []
+                st.rerun()
+        except Exception as e:
+            error_msg = f"抱歉，处理您的请求时遇到了问题：{e}"
+            st.session_state.chat_history.append({"role": "assistant", "content": error_msg})
             st.rerun()
+
+    # 热门关键词
+    st.markdown("""
+    <div style="max-width:720px; margin:0 auto; padding:0 16px;">
+        <div style="font-size:12px; color:#888; margin-bottom:8px;">热门关键词</div>
+        <div style="display:flex; flex-wrap:wrap; gap:8px;">
+    """, unsafe_allow_html=True)
+    
+    keywords = ["小盘股", "强势股", "低PE", "科技股", "高换手", "破净股", 
+                "均线多头排列", "MACD金叉", "量价齐升", "超跌反弹", "高分红", "北向资金"]
+    
+    cols = st.columns(6)
+    for i, kw in enumerate(keywords):
+        with cols[i % 6]:
+            if st.button(kw, key=f"kw_{kw}", use_container_width=True):
+                st.session_state.chat_history.append({"role": "user", "content": f"帮我找{kw}的股票"})
+                st.rerun()
+    
+    st.markdown("</div></div>", unsafe_allow_html=True)
+    
+    # 风险提示
+    st.markdown("""
+    <div style="max-width:720px; margin:24px auto; padding:12px 16px; background:#fffbeb; border:1px solid #fcd34d; border-radius:8px; font-size:12px; color:#92400e; line-height:1.6;">
+        ⚠️ <strong>风险提示：</strong> 本工具基于公开历史数据与算法模型生成分析结果，<strong>不构成投资建议</strong>。股票市场存在波动风险，过往表现不代表未来收益。投资者应独立判断，自行承担投资风险。
+    </div>
+    """, unsafe_allow_html=True)
+
 
 # ========== 侧边栏（全部选股条件） ==========
 with st.sidebar:
-    st.header("⚙️ 配置中心")
-    # 页面导航
-    page = st.radio("页面导航", ["🏠 首页", "🤖 AI选股助手", "📈 策略选股"],
-                    index=["🏠 首页", "🤖 AI选股助手", "📈 策略选股"].index(st.session_state.current_page),
-                    key="nav_radio")
-    if page != st.session_state.current_page:
-        st.session_state.current_page = page
-        st.rerun()
-    st.divider()
-
+    st.header("策略定制")
+    
     strategy_keys = list(STRATEGY_NAMES.keys())
-    # 处理 AI 助手传来的策略目标（在 selectbox 实例化前设置默认值）
+    # 处理 AI 助手传来的策略目标
     if "agent_target_strategy" in st.session_state:
         target = st.session_state.agent_target_strategy
         if target in strategy_keys:
             st.session_state.sb_strategy = target
         del st.session_state.agent_target_strategy
 
-    # 高级策略模式开关
+    # 基础策略
+    sel_strategy = st.selectbox(
+        "基础策略", options=strategy_keys,
+        format_func=lambda x: STRATEGY_NAMES[x], key="sb_strategy"
+    )
+    
+    # 策略详情
+    detail = STRATEGY_DETAIL_DATA.get(sel_strategy, {})
+    if detail:
+        with st.expander(f"查看「{STRATEGY_NAMES.get(sel_strategy, '')}」详情"):
+            st.caption(detail.get("desc", ""))
+            st.markdown("**选股条件**")
+            for cond_text, plain, tip in detail.get("strategy_conditions", []):
+                st.markdown(f"✓ **{cond_text}** — *{plain}*")
+                st.caption(f"{tip}")
+    
+    st.divider()
+    
+    # 叠加条件
     if "advanced_mode" not in st.session_state:
         st.session_state.advanced_mode = False
-    # AI 助手触发高级策略时，重置 toggle 状态
     if "agent_advanced_mode" in st.session_state:
         st.session_state.advanced_mode = st.session_state.agent_advanced_mode
         if "adv_mode_toggle" in st.session_state:
             del st.session_state.adv_mode_toggle
         del st.session_state.agent_advanced_mode
-    advanced_mode = st.toggle("🔧 高级策略模式（多条件组合）", value=st.session_state.advanced_mode, key="adv_mode_toggle")
-
+    
+    advanced_mode = st.checkbox("启用多条件组合（取交集）", value=st.session_state.advanced_mode, key="adv_mode_toggle")
+    
+    # 当前组合预览
+    combo_text = STRATEGY_NAMES.get(sel_strategy, "未选择")
+    if advanced_mode:
+        combo_text += " + 自定义条件"
+    
+    st.markdown(f"""
+    <div class="combo-preview">
+        <div class="label">当前组合条件</div>
+        <div class="text">{combo_text}</div>
+    </div>
+    """, unsafe_allow_html=True)
+    
     if advanced_mode:
         # AI 助手传来的高级条件
         if "agent_advanced_conditions" in st.session_state:
@@ -1384,85 +1573,89 @@ with st.sidebar:
         if "advanced_conditions" not in st.session_state:
             st.session_state.advanced_conditions = []
 
-        # 规范化：从 AI 助手传入的可能是 dict 列表，也可能是 str 列表
-        raw_conds = st.session_state.advanced_conditions
-        cond_map = {}
-        for c in raw_conds:
-            if isinstance(c, dict):
-                cond_map[c.get("type", "")] = c
-            elif isinstance(c, str):
-                cond_map[c] = {"type": c}
-
-        st.markdown("**📋 选择要组合的策略条件（取交集）**")
+        # 5 个折叠分类（使用已有的 ADVANCED_CONDITIONS）
+        with st.expander("1️⃣ 趋势指标", expanded=False):
+            st.checkbox("均线多头排列", help="MA5 > MA10 > MA20 > MA60", key="cond_ma_bull")
+            st.checkbox("MACD金叉", help="DIF上穿DEA，MACD柱>0", key="cond_macd_golden")
+            st.checkbox("年线MACD > 0", help="年度尺度MACD>0", key="cond_macd_yearly_positive")
+            st.checkbox("KDJ低位金叉", help="K上穿D且K<50", key="cond_kdj_golden")
+            st.checkbox("股价 > MA60", help="价格站在60日均线上方", key="cond_price_above_ma60")
+        
+        with st.expander("2️⃣ 量价指标", expanded=False):
+            st.checkbox("量价齐升", value=True, help="涨幅>3%，成交量显著放大", key="cond_volume_price")
+            st.checkbox("日线MACD > 0", help="DIF > DEA", key="cond_macd_positive")
+            st.checkbox("RSI超卖反弹", help="RSI从超卖区回升", key="cond_rsi_oversold")
+        
+        with st.expander("3️⃣ 估值指标", expanded=False):
+            st.checkbox("基本面低估值", help="PE/PB处于较低水平", key="cond_fundamental")
+            st.checkbox("市盈率PE范围", help="PE在设定范围内", key="cond_fundamental_pe")
+            st.checkbox("市净率PB范围", help="PB在设定范围内", key="cond_fundamental_pb")
+            st.checkbox("净资产收益率", help="ROE不低于设定阈值", key="cond_fundamental_roe")
+        
+        with st.expander("4️⃣ 基本面", expanded=False):
+            st.checkbox("营业总收入", help="营业总收入不低于设定阈值", key="cond_fundamental_revenue")
+            st.checkbox("归母净利润", help="归母净利润不低于设定阈值", key="cond_fundamental_parent_profit")
+            st.checkbox("扣非净利润", help="扣非净利润不低于设定阈值", key="cond_fundamental_deduct_profit")
+            st.checkbox("销售毛利率", help="销售毛利率不低于设定阈值", key="cond_fundamental_gross_margin")
+        
+        with st.expander("5️⃣ 形态与突破", expanded=False):
+            st.checkbox("突破近期新高", help="收盘价创近期N日新高", key="cond_breakout")
+            st.checkbox("季线MACD > 0", help="季度尺度MACD>0", key="cond_macd_quarterly_positive")
+        
+        # 收集选中的条件
         from strategies import ADVANCED_CONDITIONS
         selected = []
-        for cond_id, meta in ADVANCED_CONDITIONS.items():
-            default = cond_id in cond_map
-            if st.checkbox(f"{meta['name']}", value=default, help=meta["desc"], key=f"adv_cond_{cond_id}"):
-                selected.append(cond_map.get(cond_id, {"type": cond_id}))
+        for cond_id in ADVANCED_CONDITIONS.keys():
+            if st.session_state.get(f"cond_{cond_id}", False):
+                selected.append({"type": cond_id})
         st.session_state.advanced_conditions = selected
-        sel_strategy = "advanced"
-
-        # 高级策略详情
-        with st.expander("📖 已选条件说明", expanded=True):
-            if selected:
-                for c in selected:
-                    cid = c.get("type", "")
-                    meta = ADVANCED_CONDITIONS.get(cid, {})
-                    detail = f"min={c['min']}" if "min" in c else meta.get("desc", "")
-                    st.markdown(f"✓ **{meta.get('name', cid)}** — {detail}")
-            else:
-                st.caption("请至少选择一个条件")
-    else:
-        sel_strategy = st.selectbox(
-            "选股策略", options=strategy_keys,
-            format_func=lambda x: STRATEGY_NAMES[x], key="sb_strategy"
-        )
-
-        # 策略详情（纯Streamlit组件，避免HTML渲染问题）
-        detail = STRATEGY_DETAIL_DATA.get(sel_strategy, {})
-        if detail:
-            with st.expander(f"📖 查看「{STRATEGY_NAMES.get(sel_strategy, '')}」策略详情", expanded=True):
-                st.caption(detail.get("desc", ""))
-
-                st.markdown("**📌 策略选股条件**")
-                for cond_text, plain, tip in detail.get("strategy_conditions", []):
-                    st.markdown(f"✓ **{cond_text}** — *{plain}*")
-                    st.caption(f"💡 {tip}")
-
-                st.caption("该解释基于您设定的策略条件自动生成")
+        
+        # 更新组合预览
+        if selected:
+            combo_text += " + " + " + ".join([ADVANCED_CONDITIONS.get(c["type"], {}).get("name", c["type"]) for c in selected])
+            st.markdown(f"""
+            <div class="combo-preview">
+                <div class="label">当前组合条件</div>
+                <div class="text">{combo_text}</div>
+            </div>
+            """, unsafe_allow_html=True)
 
     st.divider()
 
-    # 全局过滤条件
-    st.subheader("🔧 全局过滤")
-    filter_st = st.toggle("🚫 排除ST/退市/风险股", value=True)
-    filter_hs = st.toggle("🇨🇳 仅沪深A股", value=True)
+    # 全局过滤
+    st.subheader("全局过滤")
+    filter_st = st.checkbox("排除ST/退市/风险股", value=True)
+    filter_hs = st.checkbox("仅沪深A股", value=True)
 
+    # 价格区间
     c1, c2 = st.columns(2)
     with c1:
         min_price = st.number_input("最低价格", value=2.0, min_value=0.1, step=1.0, format="%.2f", key="f_min_price")
     with c2:
         max_price = st.number_input("最高价格", value=500.0, min_value=1.0, step=10.0, format="%.2f", key="f_max_price")
 
+    # 涨跌幅
     c1, c2 = st.columns(2)
     with c1:
         chg_min = st.number_input("最小涨跌%", value=-10.0, min_value=-20.0, max_value=20.0, step=0.5, key="f_chg_min")
     with c2:
         chg_max = st.number_input("最大涨跌%", value=10.0, min_value=-20.0, max_value=20.0, step=0.5, key="f_chg_max")
 
+    # 成交量
     c1, c2 = st.columns(2)
     with c1:
         vol_min = st.number_input("最小成交量(万手)", value=0, min_value=0, step=100, key="f_vol_min")
     with c2:
         vol_max = st.number_input("最大成交量(万手)", value=100000, min_value=0, step=1000, key="f_vol_max")
 
+    # PE
     c1, c2 = st.columns(2)
     with c1:
         pe_min = st.number_input("最小PE", value=0.0, min_value=0.0, step=1.0, key="f_pe_min")
     with c2:
         pe_max = st.number_input("最大PE", value=500.0, min_value=0.0, step=10.0, key="f_pe_max")
 
+    # PB
     c1, c2 = st.columns(2)
     with c1:
         pb_min = st.number_input("最小PB", value=0.0, min_value=0.0, step=0.1, key="f_pb_min")
@@ -1472,7 +1665,7 @@ with st.sidebar:
     st.divider()
 
     # 策略参数
-    st.subheader("📋 策略参数")
+    st.subheader("策略参数")
     extra = {}
     if sel_strategy == "rsi_oversold":
         extra["rsi_low"] = st.slider("RSI超卖线", 10, 40, 30, key="p_rsi_low")
@@ -1482,52 +1675,24 @@ with st.sidebar:
     elif sel_strategy == "fundamental":
         extra["max_pe"] = st.slider("最大PE", 5, 100, 30, key="p_max_pe")
         extra["max_pb"] = st.slider("最大PB", 0.5, 10.0, 3.0, 0.5, key="p_max_pb")
-    elif sel_strategy == "advanced":
-        # 高级策略参数（仅当对应条件被选中时才显示）
+    elif sel_strategy == "advanced" and advanced_mode:
+        # 高级策略参数
         selected = st.session_state.get("advanced_conditions", [])
-        if "rsi_oversold" in selected:
+        if "rsi_oversold" in [c.get("type", "") for c in selected]:
             extra["rsi_low"] = st.slider("RSI超卖线", 10, 40, 30, key="p_adv_rsi_low")
             extra["rsi_high"] = st.slider("RSI反弹上限", 20, 60, 45, key="p_adv_rsi_high")
-        if "breakout" in selected:
+        if "breakout" in [c.get("type", "") for c in selected]:
             extra["breakout_days"] = st.slider("突破周期(日)", 20, 120, 60, key="p_adv_breakout_days")
-        if "fundamental" in selected:
+        if "fundamental" in [c.get("type", "") for c in selected]:
             extra["max_pe"] = st.slider("最大PE", 5, 100, 30, key="p_adv_max_pe")
             extra["max_pb"] = st.slider("最大PB", 0.5, 10.0, 3.0, 0.5, key="p_adv_max_pb")
-        # 基本面专业指标阈值（统一放在可展开区域）
-        # 格式: (标签, 最小允许值, 最大允许值, 默认最小值, 默认最大值, key前缀)
-        fundamental_all = {
-            "fundamental_revenue": ("营业总收入（亿元）", 0.0, 100000.0, 3.0, 100000.0, "revenue"),
-            "fundamental_parent_profit": ("归母净利润（亿元）", 0.0, 100000.0, 0.2, 100000.0, "parent_profit"),
-            "fundamental_deduct_profit": ("扣非净利润（亿元）", 0.0, 100000.0, 0.2, 100000.0, "deduct_profit"),
-            "fundamental_roe": ("净资产收益率（%）", 0.0, 1000.0, 5.0, 1000.0, "roe"),
-            "fundamental_gross_margin": ("销售毛利率（%）", 0.0, 100.0, 20.0, 100.0, "gross_margin"),
-            "fundamental_pe": ("市盈率PE", 0.0, 1000.0, 0.0, 500.0, "pe"),
-            "fundamental_pb": ("市净率PB", 0.0, 100.0, 0.0, 50.0, "pb"),
-        }
-        selected_types = {c.get("type", "") if isinstance(c, dict) else c for c in selected}
-        has_fundamental = any(c in selected_types for c in fundamental_all)
-        if has_fundamental:
-            with st.expander("📊 基本面筛选阈值", expanded=True):
-                for cond_id, (label, min_v, max_v, def_min, def_max, key_prefix) in fundamental_all.items():
-                    if cond_id in selected_types:
-                        c1, c2 = st.columns(2)
-                        extra[f"{key_prefix}_min"] = c1.number_input(
-                            f"最小{label}", value=def_min, min_value=min_v, max_value=max_v, step=0.1,
-                            key=f"p_adv_{key_prefix}_min"
-                        )
-                        extra[f"{key_prefix}_max"] = c2.number_input(
-                            f"最大{label}", value=def_max, min_value=min_v, max_value=max_v, step=0.1,
-                            key=f"p_adv_{key_prefix}_max"
-                        )
-        if not selected:
-            st.caption("请在上方选择至少一个条件")
     else:
         st.caption("当前策略无额外参数")
 
     st.divider()
 
     # 性能设置
-    st.subheader("⚡ 性能设置")
+    st.subheader("性能设置")
     max_candidates = st.slider(
         "候选股上限", 100, 2000,
         st.session_state.max_candidates, 100,
@@ -1539,9 +1704,15 @@ with st.sidebar:
     st.divider()
 
     # 执行按钮
-    btn_label = "🚀 执行高级选股" if sel_strategy == "advanced" else "🚀 执行选股"
-    run_clicked = st.button(btn_label, type="primary", width="stretch", key="btn_run")
-    st.caption("⚠️ AI基于历史数据筛选，结果不代表未来表现。")
+    btn_label = "执行选股"
+    run_clicked = st.button(btn_label, type="primary", use_container_width=True, key="btn_run")
+    
+    # 合规声明
+    st.markdown("""
+    <div style="margin-top:12px; padding:10px; background:#fafbfc; border:1px solid #e0e0e0; border-radius:8px; font-size:10px; color:#888; line-height:1.5;">
+        <strong>⚠️ 风险提示：</strong> 本工具基于公开历史数据生成分析结果，<strong>不构成投资建议</strong>。投资者应独立判断，自行承担投资风险。
+    </div>
+    """, unsafe_allow_html=True)
 
 # ========== 概览卡片 ==========
 # 过滤后的股票池大小
@@ -1583,13 +1754,23 @@ with col5:
 
 st.divider()
 
-# ========== 页面路由 ==========
-if st.session_state.current_page == "🏠 首页":
-    render_home_page()
-    st.stop()
-elif st.session_state.current_page == "🤖 AI选股助手":
+# ========== 页面路由（顶部标签导航）==========
+tab_ai, tab_strategy, tab_dashboard = st.tabs(["AI选股", "策略选股", "数据看板"])
+
+# AI选股页
+with tab_ai:
     render_agent_page()
-    st.stop()
+
+# 策略选股页
+with tab_strategy:
+    if "last_result" not in st.session_state or st.session_state.last_result is None:
+        st.info("请在左侧配置策略条件后，点击「执行选股」开始分析。")
+
+# 数据看板页
+with tab_dashboard:
+    render_home_page()
+    
+st.stop()
 
 # ========== 选股执行 ==========
 if run_clicked:
@@ -1744,43 +1925,61 @@ if st.session_state.get("run_trigger", False):
                 result = result.merge(analysis_pool[merge_cols], on="代码", how="left")
     
     else:
-        # 执行原有策略
-        func = STRATEGIES[sel_strategy]
-        try:
+        # 执行策略
+        # 如果启用了多条件组合且有选中条件，使用高级策略
+        if advanced_mode and st.session_state.get("advanced_conditions"):
+            conditions = st.session_state.get("advanced_conditions", [])
+            # 规范化 conditions
+            normalized = []
+            for c in conditions:
+                if isinstance(c, dict) and c.get("type"):
+                    normalized.append(c)
+                elif isinstance(c, str):
+                    normalized.append({"type": c})
+            conditions = normalized
+            
+            # 如果基础策略也有对应的 advanced 条件，加入列表
+            strategy_to_cond = {
+                "ma_bull": "ma_bull",
+                "macd_golden": "macd_golden",
+                "volume_price": "volume_price",
+                "breakout": "breakout",
+                "rsi_oversold": "rsi_oversold",
+                "kdj_golden": "kdj_golden",
+                "fundamental": "fundamental",
+            }
+            if sel_strategy in strategy_to_cond:
+                base_cond = {"type": strategy_to_cond[sel_strategy]}
+                # 避免重复添加
+                if not any(c.get("type") == base_cond["type"] for c in conditions):
+                    conditions.insert(0, base_cond)
+            
+            if not conditions:
+                st.warning("⚠️ 请先在侧边栏选择至少一个条件。")
+                st.stop()
+            
+            # 如果包含基本面条件，获取业绩报表并合并
+            fundamental_cond_ids = {"fundamental_revenue", "fundamental_parent_profit", "fundamental_deduct_profit", "fundamental_roe", "fundamental_gross_margin"}
+            if any(c.get("type") in fundamental_cond_ids for c in conditions):
+                with st.status("正在获取基本面数据...", expanded=True) as fin_status:
+                    fin_report = get_financial_report()
+                    if not fin_report.empty:
+                        if "名称" in fin_report.columns:
+                            fin_report = fin_report.drop(columns=["名称"])
+                        analysis_pool = analysis_pool.merge(fin_report, on="代码", how="left")
+                        fin_status.update(label=f"基本面数据获取完成 ({len(fin_report)}只)", state="complete")
+                    else:
+                        fin_status.update(label="基本面数据获取失败，将跳过基本面条件", state="complete")
+            
+            func = STRATEGIES["advanced"]
+            result = func(analysis_pool, klines_dict=klines_dict, conditions=conditions, **extra)
+        else:
+            # 执行基础策略
+            func = STRATEGIES[sel_strategy]
             if sel_strategy == "fundamental":
                 result = func(analysis_pool, **extra)
-            elif sel_strategy == "advanced":
-                conditions = st.session_state.get("advanced_conditions", [])
-                # 规范化 conditions
-                normalized = []
-                for c in conditions:
-                    if isinstance(c, dict) and c.get("type"):
-                        normalized.append(c)
-                    elif isinstance(c, str):
-                        normalized.append({"type": c})
-                conditions = normalized
-                if not conditions:
-                    st.warning("⚠️ 请先在侧边栏选择至少一个高级策略条件。")
-                    st.stop()
-                # 如果包含基本面条件，获取业绩报表并合并
-                fundamental_cond_ids = {"fundamental_revenue", "fundamental_parent_profit", "fundamental_deduct_profit", "fundamental_roe", "fundamental_gross_margin"}
-                if any(c.get("type") in fundamental_cond_ids for c in conditions):
-                    with st.status("📊 正在获取基本面数据...", expanded=True) as fin_status:
-                        fin_report = get_financial_report()
-                        if not fin_report.empty:
-                            # 避免名称列冲突
-                            if "名称" in fin_report.columns:
-                                fin_report = fin_report.drop(columns=["名称"])
-                            analysis_pool = analysis_pool.merge(fin_report, on="代码", how="left")
-                            fin_status.update(label=f"✅ 基本面数据获取完成 ({len(fin_report)}只)")
-                        else:
-                            fin_status.update(label="⚠️ 基本面数据获取失败，将跳过基本面条件")
-                result = func(analysis_pool, klines_dict=klines_dict, conditions=conditions, **extra)
             else:
                 result = func(analysis_pool, klines_dict=klines_dict, **extra)
-        except Exception as e:
-            st.error(f"策略执行出错: {e}")
-            st.stop()
 
         # 补充实时行情列（如果策略结果缺失涨跌幅等常用列）
         if not result.empty and "涨跌幅" not in result.columns and "涨跌幅" in analysis_pool.columns:
@@ -2216,6 +2415,13 @@ if "last_result" in st.session_state and st.session_state.last_result is not Non
 
         st.stop()
 
+# 合规声明（策略选股页底部）
+st.markdown("""
+<div class="disclaimer">
+    <strong>⚠️ 风险提示：</strong> 本工具基于公开历史数据与算法模型生成分析结果，<strong>不构成投资建议</strong>。股票市场存在波动风险，过往表现不代表未来收益。投资者应独立判断，自行承担投资风险。
+</div>
+""", unsafe_allow_html=True)
+
 # ========== 无结果时的提示 ==========
 if "last_result" not in st.session_state or st.session_state.last_result is None:
-    st.info("👆 请在上方配置过滤条件和策略参数后，点击「🚀 执行选股」开始分析。")
+    st.info("请在上方配置过滤条件和策略参数后，点击「执行选股」开始分析。")
