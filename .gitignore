@@ -10,7 +10,7 @@ build/
 
 # Cache & Logs
 cache/*.pkl
-!cache/stock_list.pkl
+!cache/stock_list.csv
 *.log
 *.pid
 

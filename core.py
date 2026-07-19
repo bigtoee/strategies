@@ -121,17 +121,34 @@ def read_tdx_day(code: str, days: int = 120) -> pd.DataFrame:
 def get_stock_list() -> pd.DataFrame:
     """获取A股列表，过滤ST/警示股，仅保留沪深。失败时回退到本地缓存。"""
     
-    # 辅助函数：加载缓存
-    def _load_cache():
+    # 辅助函数：加载 CSV 缓存（跨 Python 版本兼容）
+    def _load_csv_cache():
+        try:
+            df = pd.read_csv("cache/stock_list.csv", encoding="utf-8")
+            if df.empty or "名称" not in df.columns:
+                return pd.DataFrame()
+            # 清理列名
+            df.columns = [c.strip() for c in df.columns]
+            # 过滤ST/警示股
+            df = df[~df["名称"].apply(is_risk_stock)].reset_index(drop=True)
+            # 仅保留沪深A股
+            df = df[df["代码"].apply(is_hs_stock)].reset_index(drop=True)
+            return df
+        except Exception as e:
+            print(f"[!] CSV缓存加载失败: {e}")
+            return pd.DataFrame()
+    
+    # 辅助函数：加载 pickle 缓存（可能不跨版本兼容）
+    def _load_pickle_cache():
         try:
             df = pd.read_pickle("cache/stock_list.pkl")
             if df.empty or "名称" not in df.columns:
                 return pd.DataFrame()
-            # 再次过滤（缓存可能是原始数据）
             df = df[~df["名称"].apply(is_risk_stock)].reset_index(drop=True)
             df = df[df["代码"].apply(is_hs_stock)].reset_index(drop=True)
             return df
-        except Exception:
+        except Exception as e:
+            print(f"[!] Pickle缓存加载失败: {e}")
             return pd.DataFrame()
     
     # 辅助函数：硬编码备用列表（确保至少能运行）
@@ -174,8 +191,7 @@ def get_stock_list() -> pd.DataFrame:
             ("688169", "石头科技"), ("688185", "康希诺"), ("688981", "中芯国际")
         ]
         df = pd.DataFrame(builtin_data, columns=["代码", "名称"])
-        # 过滤ST/警示股
-        df = df[~df["名称"].apply(is_risk_stock)].reset_index(drop=True)
+        # 不过滤ST，因为内置列表已经干净
         return df
     
     # 尝试 1: akshare 实时获取
@@ -200,20 +216,27 @@ def get_stock_list() -> pd.DataFrame:
         # 保存到本地缓存
         try:
             os.makedirs("cache", exist_ok=True)
-            df.to_pickle("cache/stock_list.pkl")
+            df.to_csv("cache/stock_list.csv", index=False, encoding="utf-8")
         except Exception:
             pass
         return df
     except Exception as e:
-        print(f"[!] 获取股票列表失败，尝试本地缓存: {e}")
+        print(f"[!] akshare获取失败: {e}")
     
-    # 尝试 2: 本地缓存
-    df = _load_cache()
+    # 尝试 2: CSV 缓存（跨版本兼容）
+    df = _load_csv_cache()
     if not df.empty:
+        print("[+] 使用CSV缓存")
         return df
     
-    # 尝试 3: 硬编码备用列表
-    print("[!] 缓存也不可用，使用内置备用列表")
+    # 尝试 3: Pickle 缓存
+    df = _load_pickle_cache()
+    if not df.empty:
+        print("[+] 使用Pickle缓存")
+        return df
+    
+    # 尝试 4: 硬编码备用列表
+    print("[!] 使用内置备用列表")
     return _fallback_builtin()
 
 
